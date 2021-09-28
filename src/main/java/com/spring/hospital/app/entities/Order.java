@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @Entity
@@ -14,9 +15,14 @@ public class Order {
     @Column(name = "order_id")
     private int id;
 
-    @Column(name = "patient_id")
-    private int patientId;
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 
     @Column(name = "datatime")
     private Timestamp datatime;
+
+    @OneToMany(mappedBy = "order")
+    private List<Treatment> treatments;
 }
+

@@ -3,6 +3,7 @@ package com.spring.hospital.app.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -13,11 +14,13 @@ public class Doctor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "doctor_specialty_id")
-    private int doctorSpecialtyId;
+    @ManyToOne
+    @JoinColumn(name = "doctor_specialty_id")
+    private DoctorSpecialty doctorSpecialty;
 
-    @Column(name = "doctor_category_id")
-    private int doctorCategoryId;
+    @ManyToOne
+    @JoinColumn(name = "doctor_category_id")
+    private DoctorCategory doctorCategory;
 
     @Column(name = "first_name")
     private String firstName;
@@ -28,5 +31,6 @@ public class Doctor {
     @Column(name = "middle_name")
     private String middleName;
 
-
+    @OneToMany(mappedBy = "doctor")
+    private List <Treatment> treatments;
 }

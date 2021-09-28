@@ -3,6 +3,7 @@ package com.spring.hospital.app.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -16,4 +17,6 @@ public class DoctorCategory {
     @Column(name = "doctor_category")
     private String categoryName;
 
+    @OneToMany(mappedBy = "doctorCategory")
+    private List<Doctor> doctors;
 }

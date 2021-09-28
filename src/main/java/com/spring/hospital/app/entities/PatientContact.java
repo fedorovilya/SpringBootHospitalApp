@@ -13,9 +13,6 @@ public class PatientContact {
     @Column(name = "patient_contact_id")
     private int contactId;
 
-    @Column(name = "patient_id")
-    private int patientId;
-
     @Column(name = "patient_phone")
     private String phone;
 
@@ -25,5 +22,7 @@ public class PatientContact {
     @Column(name = "patient_email")
     private String email;
 
-
+    @OneToOne
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 }
