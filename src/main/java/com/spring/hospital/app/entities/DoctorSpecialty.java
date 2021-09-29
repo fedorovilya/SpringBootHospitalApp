@@ -1,5 +1,6 @@
 package com.spring.hospital.app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public class DoctorSpecialty {
     @Column(name = "doctor_specialty")
     private String specialtyName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "doctorSpecialty")
     private List<Doctor> doctors;
 }

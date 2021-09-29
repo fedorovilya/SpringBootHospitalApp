@@ -19,4 +19,5 @@ public class Diagnosis {
 
     @OneToMany(mappedBy = "diagnosis")
     private List <Treatment> treatments;
+
 }

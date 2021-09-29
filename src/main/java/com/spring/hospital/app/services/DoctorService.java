@@ -1,6 +1,7 @@
 package com.spring.hospital.app.services;
 
 import com.spring.hospital.app.entities.Doctor;
+import com.spring.hospital.app.entities.Patient;
 import com.spring.hospital.app.entities.Treatment;
 import com.spring.hospital.app.repositories.DoctorRepos;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,7 @@ public class DoctorService {
     }
 
     public List <Doctor> getDoctorsByAll(){
-        List <Doctor> doctors = doctorRepos.findAll();
-        return doctors;
+        return doctorRepos.findAll();
     }
 
     public Doctor getDoctorById(Integer id){
@@ -29,17 +29,21 @@ public class DoctorService {
         return doctor.orElse(null);
     }
 
+    public List <Treatment> getDoctorTreatmentsByDoctorId(Integer id){
+        Doctor doctor = doctorRepos.getById(id);
+        return doctor.getTreatments();
+    }
     public void saveDoctor(Doctor doctor){
         doctorRepos.save(doctor);
     }
 
     public void deleteDoctorById(Integer id){
-        doctorRepos.deleteById(id);
+        if (doctorRepos.existsById(id))
+            doctorRepos.deleteById(id);
     }
 
     public String getDoctorFirstMiddleLastNameStringById(Integer id){
         Doctor doctor = getDoctorById(id);
-        String names = doctor.getLastName() + " " + doctor.getFirstName()+ " " + doctor.getMiddleName();
-        return names;
+        return doctor.getLastName() + " " + doctor.getFirstName()+ " " + doctor.getMiddleName();
     }
 }
