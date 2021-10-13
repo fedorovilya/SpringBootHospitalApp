@@ -1,25 +1,29 @@
 package com.spring.hospital.app.services;
 
 import com.spring.hospital.app.entities.Doctor;
-import com.spring.hospital.app.entities.DoctorCategory;
-import com.spring.hospital.app.entities.DoctorSpecialty;
+import com.spring.hospital.app.entities.Dto.DoctorDto;
 import com.spring.hospital.app.entities.Treatment;
-import com.spring.hospital.app.repositories.CategoryRepos;
+import com.spring.hospital.app.repositories.DoctorCategoryRepos;
 import com.spring.hospital.app.repositories.DoctorRepos;
-import com.spring.hospital.app.repositories.SpecialtyRepos;
+import com.spring.hospital.app.repositories.DoctorSpecialtyRepos;
+import com.spring.hospital.app.utils.MappingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DoctorService {
 
     private DoctorRepos doctorRepos;
-    private CategoryRepos categoryRepos;
-    private SpecialtyRepos specialtyRepos;
+    private DoctorCategoryRepos doctorCategoryRepos;
+
+    private DoctorSpecialtyRepos doctorSpecialtyRepos;
+
+    @Autowired
+    private MappingUtils mappingUtils;
 
     @Autowired
     public void setDoctorRepos(DoctorRepos doctorRepos) {
@@ -27,44 +31,51 @@ public class DoctorService {
     }
 
     @Autowired
-    public void setCategoryRepos(CategoryRepos categoryRepos) {
-        this.categoryRepos = categoryRepos;
+    public void setDoctorCategoryRepos(DoctorCategoryRepos doctorCategoryRepos) {
+        this.doctorCategoryRepos = doctorCategoryRepos;
     }
 
     @Autowired
-    public void setSpecialtyRepos(SpecialtyRepos specialtyRepos) {
-        this.specialtyRepos = specialtyRepos;
+    public void setDoctorSpecialtyRepos(DoctorSpecialtyRepos doctorSpecialtyRepos) {
+        this.doctorSpecialtyRepos = doctorSpecialtyRepos;
     }
 
-    public List <Doctor> getDoctorsByAll(){
-        return doctorRepos.findAll();
+    public List <DoctorDto> getDoctorsByAll(){
+        return doctorRepos.findAll().stream() //стрим из листа
+                .map(MappingUtils::mapToDoctorDto) //маппинг для каждого элемента
+                .collect(Collectors.toList()); //превратили стрим обратно в коллекцию, а точнее в лист
+
     }
 
-    public Doctor getDoctorById(Integer id){
-        Optional<Doctor> doctor = Optional.of(doctorRepos.getById(id));
+    public DoctorDto getDoctorById(Integer id){
+        Optional<DoctorDto> doctor =
+                Optional.of(mappingUtils.mapToDoctorDto(doctorRepos.getById(id)));
         return doctor.orElse(null);
     }
 
-   /* public List <Doctor> findDoctorsByParams(Integer id, String lastName, String firstName, String middleName, String specialtyName, String categoryName){
-        if (id != null) doctorRepos.fi
-    }*/
+    //потом доделать используя Spring Data Specifications
+    public List <DoctorDto> findDoctorsByParams(Integer id, String lastName, String firstName, String middleName, String specialtyName, String categoryName){
+        List <DoctorDto> doctors = null;
 
-    public void saveDoctor(Doctor doctor){
+        if (id != null) {
+            doctors.add(getDoctorById(id));
+            return doctors;
+        }
+        if (lastName != null)
+
+        return doctors;
+        return doctors;
+    }
+
+    public void saveDoctor(DoctorDto doctorDto){
+        Doctor doctor;
+        doctor = MappingUtils.mapToDoctorEntity(doctorDto);
         doctorRepos.save(doctor);
     }
 
     public void saveDoctorWithParams(Integer id, String lastName, String firstName, String middleName, String specialtyName, String categoryName){
-        Doctor doctor = new Doctor();
-        DoctorSpecialty doctorSpecialty = specialtyRepos.findBySpecialtyName(specialtyName);
-        DoctorCategory doctorCategory = categoryRepos.findByCategoryName(categoryName);
-        doctor.setFirstName(firstName);
-        doctor.setLastName(lastName);
-        doctor.setMiddleName(middleName);
-        doctor.setId(id);
-        doctor.setDoctorSpecialty(doctorSpecialty);
-        doctor.setDoctorCategory(doctorCategory);
-
-        doctorRepos.save(doctor);
+        DoctorDto doctorDto = new DoctorDto(id, firstName, middleName, lastName, categoryName, specialtyName);
+        saveDoctor(doctorDto);
     }
 
     public void editDoctorWithParams(int id, String lastName, String firstName, String middleName, String specialtyName, String categoryName){
@@ -81,10 +92,5 @@ public class DoctorService {
 
     public void deleteDoctorById(Integer id){
         doctorRepos.deleteById(id);
-    }
-
-    public String getDoctorFirstMiddleLastNameStringById(Integer id){
-        Doctor doctor = getDoctorById(id);
-        return doctor.getLastName() + " " + doctor.getFirstName()+ " " + doctor.getMiddleName();
     }
 }

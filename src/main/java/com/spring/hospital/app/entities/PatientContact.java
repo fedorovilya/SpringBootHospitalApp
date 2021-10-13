@@ -1,5 +1,6 @@
 package com.spring.hospital.app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,11 +18,12 @@ public class PatientContact {
     private String phone;
 
     @Column(name = "patient_adress")
-    private String adress;
+    private String address;
 
     @Column(name = "patient_email")
     private String email;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;

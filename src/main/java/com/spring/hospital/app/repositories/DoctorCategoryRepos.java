@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoryRepos extends JpaRepository<DoctorCategory,Integer> {
+public interface DoctorCategoryRepos extends JpaRepository<DoctorCategory,Integer> {
     DoctorCategory findByCategoryName(String categoryName);
 }

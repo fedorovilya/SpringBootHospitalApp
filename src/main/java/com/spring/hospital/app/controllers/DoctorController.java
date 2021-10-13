@@ -1,6 +1,7 @@
 package com.spring.hospital.app.controllers;
 
 import com.spring.hospital.app.entities.Doctor;
+import com.spring.hospital.app.entities.Dto.DoctorDto;
 import com.spring.hospital.app.entities.Treatment;
 import com.spring.hospital.app.services.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,33 +20,24 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
+/*
     @GetMapping("/hello")
     public String helloDoctor(
         @RequestParam(value = "name", defaultValue = "Ilya") String name){
         return "hello " + name;
     }
+*/
 
     @GetMapping("/get")
-    public String getAllDoctors(){
-        StringBuilder doctorsString = new StringBuilder();
-        List <Doctor> doctors = doctorService.getDoctorsByAll();
-        for (Doctor doctor: doctors
-             ) {
-            doctorsString.append(doctor.toString() + "\n\n");
-        }
-        return doctorsString.toString();
+    public List <DoctorDto> getAllDoctors(){
+        List <DoctorDto> doctors = doctorService.getDoctorsByAll();
+        return doctors;
     }
 
-    //на будущее для себя: добавить DTO для классов Doctor, Patient и т.д. без связанных полей для
-    //правильной работы с сущностями с помощью JSON
+
     @GetMapping("/get/{id}")
-    public String getDoctor(@PathVariable(value = "id") Integer id){
-        return doctorService.getDoctorById(id).toString();
-    }
-
-    @GetMapping("/get/{id}/name")
-    public String getDoctorName(@PathVariable(value = "id") Integer id){
-        return doctorService.getDoctorFirstMiddleLastNameStringById(id);
+    public DoctorDto getDoctor(@PathVariable(value = "id") Integer id){
+        return doctorService.getDoctorById(id);
     }
 
     @GetMapping("/get/{id}/treatments")
